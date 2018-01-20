@@ -46,10 +46,12 @@ class BoardRender extends Component<Props> {
 
     return <div
       style={{
+        border: '4px solid gray',
         display: 'flex',
         flexWrap: 'wrap',
-        height: '100%',
-        width: '100%',
+        height: '512px',
+        margin: '0 auto',
+        width: '512px',
       }}>{squares.map((item: number, index: number) => (this.renderSquare(index)))}</div>
   }
 }
