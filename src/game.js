@@ -10,18 +10,23 @@ export const moveRobot = createAction(GAME_MOVE_ROBOT, (x: number, y: number): O
 export type GameAction = ActionType<typeof moveRobot>
 
 const defaultGameState = {
-  robotPosition: [1, 7],
+  robotPosition: {x: 1, y: 7},
+}
+
+export type Position = {
+  x: number,
+  y: number
 }
 
 type GameState = {
-  robotPosition: Array<number>,
+  robotPosition: Position,
 }
 
 const moveRobotHandler = (state: GameState, action: ActionType<typeof moveRobot>): GameState => {
   const {x, y} = action.payload
   const newState = immutable(state)
-    .set(['robotPosition', '0'], x)
-    .set(['robotPosition', '1'], y)
+    .set(['robotPosition', 'x'], x)
+    .set(['robotPosition', 'y'], y)
     .value()
   return newState
 }
@@ -30,8 +35,8 @@ const game = handleActions({
   [GAME_MOVE_ROBOT]: moveRobotHandler,
 }, defaultGameState)
 
-export function canMoveRobot(robotPosition: Array<number>, toX: number, toY: number): boolean {
-  const [x, y] = robotPosition
+export function canMoveRobot(robotPosition: Position, toX: number, toY: number): boolean {
+  const {x, y} = robotPosition
   const dx = toX - x
   const dy = toY - y
 

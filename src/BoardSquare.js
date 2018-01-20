@@ -10,6 +10,7 @@ import {connect} from 'react-redux'
 import {canMoveRobot, moveRobot} from './game'
 import type {GameAction} from './game'
 import ItemTypes from './ItemTypes'
+import type {Position} from './game'
 import Square from './Square'
 import type {State} from './store'
 
@@ -27,7 +28,7 @@ type CollectProps = {
 }
 
 type StateProps = {
-  robotPosition: Array<number>
+  robotPosition: Position
 }
 
 type DispatchProps = {

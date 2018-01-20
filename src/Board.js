@@ -3,13 +3,14 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import BoardSquare from './BoardSquare'
 import Robot from './Robot'
+import type {Position} from './game'
 import type {State} from './store'
 
 type OwnProps = {
 }
 
 type StateProps = {
-  robotPosition: Array<number>
+  robotPosition: Position
 }
 
 type Props = OwnProps & StateProps
@@ -18,7 +19,7 @@ class BoardRender extends Component<Props> {
 
   renderPiece(x: number, y: number): ?React$Element<*>  {
     const {robotPosition} = this.props
-    const [robotX, robotY] = robotPosition
+    const {x:robotX, y:robotY} = robotPosition
     const isRobotHere = x === robotX && y === robotY
     return isRobotHere
       ? <Robot/>
