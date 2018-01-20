@@ -339,7 +339,16 @@ class Robot extends Component<Props> {
             ? 0.5
             : 1
         }}>
-        ♘
+        <svg
+          height="36px"
+          version="1.1"
+          viewBox="0 0 160 288"
+          width="20px"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m 32,0 h 96 v 80 h -32 v 16 h 64 v 96 h -16 v -64 h -16 v 180 h -32 v -112 h -32 v 112 h -32 v -180 h -16 v 64 h -16 v -96 h 64 v -16 h -32 v -80 z m 16, 16 v 16 h 16 v -16 h -16 z m 48, 0  v 16 h 16 v -16 h -16 z m -32, 32 v 16 h 32 v -16 h -32 z"/>
+        </svg>
       </div>,
     )
   }
