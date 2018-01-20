@@ -7,8 +7,8 @@ import type {
   DropTargetMonitor,
 } from 'react-dnd'
 import {connect} from 'react-redux'
-import {canMoveKnight, moveKnight} from './Game'
-import type {GameAction} from './Game'
+import {canMoveKnight, moveKnight} from './game'
+import type {GameAction} from './game'
 import ItemTypes from './ItemTypes'
 import Square from './Square'
 import type {State} from './store'

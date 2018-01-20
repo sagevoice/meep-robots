@@ -1,6 +1,6 @@
 // @flow
 import {combineReducers, createStore, applyMiddleware, compose} from 'redux'
-import game from './Game'
+import game from './game'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
