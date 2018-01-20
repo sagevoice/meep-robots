@@ -1,22 +1,39 @@
+// @flow
 import React, {Component} from 'react'
 import {DragSource} from 'react-dnd'
+import type {
+  ConnectDragPreview,
+  ConnectDragSource,
+  DragSourceConnector,
+  DragSourceMonitor,
+  DragSourceSpec,
+} from 'react-dnd'
 import ItemTypes from './ItemTypes'
 
-const knightSource = {
-  beginDrag() {
-    return {}
-  }
+type OwnProps = {
 }
-
-function collect(connect, monitor) {
-  return {connectDragSource: connect.dragSource(), connectDragPreview: connect.dragPreview(), isDragging: monitor.isDragging()}
-}
-
-class Knight extends Component<{
-  connectDragSource: (React$Element<*>) => React$Element<*>,
-  connectDragPreview: (React$Element<*>) => React$Element<*>,
+type CollectedProps = {
+  connectDragSource: ConnectDragSource,
+  connectDragPreview: ConnectDragPreview,
   isDragging: boolean,
-}> {
+}
+type Props = OwnProps & CollectedProps
+
+const knightSource: DragSourceSpec<OwnProps> = {
+  beginDrag: (props: OwnProps, monitor: DragSourceMonitor,
+                component: React$Component<OwnProps>): Object => ({
+  })
+}
+
+const collect = (connect: DragSourceConnector, monitor: DragSourceMonitor): Props => ({
+  // Functions we need or wish to pass to the source component (as props)
+  connectDragSource: connect.dragSource(),
+  connectDragPreview: connect.dragPreview(),
+  isDragging: monitor.isDragging(),
+})
+
+
+class Knight extends Component<Props> {
 
   componentDidMount() {
     const img = new Image()
@@ -327,6 +344,4 @@ class Knight extends Component<{
   }
 }
 
-export default DragSource(ItemTypes.KNIGHT, knightSource, collect)(
-  Knight
-);
+export default DragSource(ItemTypes.KNIGHT, knightSource, collect)(Knight)

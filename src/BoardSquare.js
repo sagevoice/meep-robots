@@ -1,8 +1,28 @@
+// @flow
 import React, {Component} from 'react'
 import {DropTarget} from 'react-dnd'
+import type {
+  ConnectDropTarget,
+  DropTargetConnector,
+  DropTargetMonitor,
+} from 'react-dnd'
 import Square from './Square'
 import {canMoveKnight, moveKnight} from './Game'
 import ItemTypes from './ItemTypes'
+
+type CollectProps = {
+  connectDropTarget: ConnectDropTarget,
+  isOver: boolean,
+  canDrop: boolean,
+}
+
+type OwnProps = {
+  children: React$Node,
+  x: number,
+  y: number,
+}
+
+type Props = CollectProps & OwnProps
 
 const squareTarget = {
   canDrop(props) {
@@ -14,18 +34,15 @@ const squareTarget = {
   }
 }
 
-function collect(connect, monitor) {
-  return {connectDropTarget: connect.dropTarget(), isOver: monitor.isOver(), canDrop: monitor.canDrop()}
+const collect = (connect: DropTargetConnector, monitor: DropTargetMonitor): CollectProps => {
+  return {
+    connectDropTarget: connect.dropTarget(),
+    isOver: monitor.isOver(),
+    canDrop: monitor.canDrop()
+  }
 }
 
-class BoardSquare extends Component<{
-  x: number,
-  y: number,
-  isOver: boolean,
-  canDrop: boolean,
-  connectDropTarget: (React$Element<*>) => React$Element<*>,
-  children: React$Node,
-}> {
+class BoardSquare extends Component<Props> {
 
   renderOverlay(color) {
     return (

@@ -1,11 +1,14 @@
+// @flow
 let knightPosition = [1, 7]
 let observer = null
 
 function emitChange() {
-  observer(knightPosition)
+  if (observer) {
+    observer(knightPosition)
+  }
 }
 
-export function observe(o) {
+export function observe(o: (knightPosition: Array<number>)=> void) {
   if (observer) {
     throw new Error('Multiple observers not implemented.')
   }
@@ -18,7 +21,7 @@ export function observe(o) {
   }
 }
 
-export function canMoveKnight(toX, toY) {
+export function canMoveKnight(toX: number, toY: number) {
   const [x, y] = knightPosition
   const dx = toX - x
   const dy = toY - y
@@ -29,7 +32,7 @@ export function canMoveKnight(toX, toY) {
   )
 }
 
-export function moveKnight(toX, toY) {
+export function moveKnight(toX: number, toY: number) {
   knightPosition = [toX, toY]
   emitChange()
 }

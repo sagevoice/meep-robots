@@ -1,13 +1,20 @@
+// @flow
 import React, {Component} from 'react'
+import {DragDropContext} from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
 import Board from './Board'
 import {observe} from './Game'
 
-class App extends Component {
+type Props = {}
+type LocalState = {
+  knightPosition: Array<number>,
+}
+class App extends Component<Props, LocalState> {
 
   state = {
     knightPosition: [1, 7]
   }
-  handleChange = (knightPosition) => {
+  handleChange = (knightPosition: Array<number>): void => {
     const nextState = {
       knightPosition
     }
@@ -37,4 +44,4 @@ class App extends Component {
   }
 }
 
-export default App
+export default DragDropContext(HTML5Backend)(App)
