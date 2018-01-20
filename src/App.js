@@ -1,21 +1,40 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {Component} from 'react'
+import Board from './Board'
+import {observe} from './Game'
 
 class App extends Component {
+
+  state = {
+    knightPosition: [1, 7]
+  }
+  handleChange = (knightPosition) => {
+    const nextState = {
+      knightPosition
+    }
+    this.setState(nextState)
+  }
+
+  unobserve = observe(this.handleChange)
+
+  componentWillUnmount() {
+    this.unobserve()
+  }
+
   render() {
+    const {knightPosition} = this.state
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+      <div>
+        <div
+          style={{
+            width: 500,
+            height: 500,
+            border: '1px solid gray'
+          }}>
+          <Board knightPosition={knightPosition}/>
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App
