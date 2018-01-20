@@ -7,7 +7,7 @@ import type {
   DropTargetMonitor,
 } from 'react-dnd'
 import {connect} from 'react-redux'
-import {canMoveKnight, moveKnight} from './game'
+import {canMoveRobot, moveRobot} from './game'
 import type {GameAction} from './game'
 import ItemTypes from './ItemTypes'
 import Square from './Square'
@@ -31,7 +31,7 @@ type StateProps = {
 }
 
 type DispatchProps = {
-  dropKnight: (x: number, y: number) => void,
+  dropRobot: (x: number, y: number) => void,
 }
 
 type Props = OwnProps & CollectProps & StateProps & DispatchProps
@@ -39,11 +39,11 @@ type Props = OwnProps & CollectProps & StateProps & DispatchProps
 const squareTarget = {
   canDrop(props: Props): boolean {
     const {robotPosition} = props
-    return canMoveKnight(robotPosition, props.x, props.y)
+    return canMoveRobot(robotPosition, props.x, props.y)
   },
 
   drop(props: Props): void {
-    props.dropKnight(props.x, props.y)
+    props.dropRobot(props.x, props.y)
   }
 }
 
@@ -110,8 +110,8 @@ const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => {
 
 const mapDispatchToProps = (dispatch: Dispatch<GameAction>, ownProps: OwnProps): DispatchProps => (
   {
-    dropKnight: (x: number, y:number): void => {
-      dispatch(moveKnight(x, y))
+    dropRobot: (x: number, y:number): void => {
+      dispatch(moveRobot(x, y))
     },
   }
 )

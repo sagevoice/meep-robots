@@ -5,9 +5,9 @@ import type {ActionType} from 'redux-actions'
 
 const GAME_MOVE_ROBOT = 'GAME_MOVE_ROBOT'
 
-export const moveKnight = createAction(GAME_MOVE_ROBOT, (x: number, y: number): Object => ({x, y}))
+export const moveRobot = createAction(GAME_MOVE_ROBOT, (x: number, y: number): Object => ({x, y}))
 
-export type GameAction = ActionType<typeof moveKnight>
+export type GameAction = ActionType<typeof moveRobot>
 
 const defaultGameState = {
   robotPosition: [1, 7],
@@ -17,7 +17,7 @@ type GameState = {
   robotPosition: Array<number>,
 }
 
-const moveKnightHandler = (state: GameState, action: ActionType<typeof moveKnight>): GameState => {
+const moveRobotHandler = (state: GameState, action: ActionType<typeof moveRobot>): GameState => {
   const {x, y} = action.payload
   const newState = immutable(state)
     .set(['robotPosition', '0'], x)
@@ -27,10 +27,10 @@ const moveKnightHandler = (state: GameState, action: ActionType<typeof moveKnigh
 }
 
 const game = handleActions({
-  [GAME_MOVE_ROBOT]: moveKnightHandler,
+  [GAME_MOVE_ROBOT]: moveRobotHandler,
 }, defaultGameState)
 
-export function canMoveKnight(robotPosition: Array<number>, toX: number, toY: number): boolean {
+export function canMoveRobot(robotPosition: Array<number>, toX: number, toY: number): boolean {
   const [x, y] = robotPosition
   const dx = toX - x
   const dy = toY - y

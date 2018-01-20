@@ -19,8 +19,8 @@ class BoardRender extends Component<Props> {
   renderPiece(x: number, y: number): ?React$Element<*>  {
     const {robotPosition} = this.props
     const [robotX, robotY] = robotPosition
-    const isKnightHere = x === robotX && y === robotY
-    return isKnightHere
+    const isRobotHere = x === robotX && y === robotY
+    return isRobotHere
       ? <Robot/>
       : null
   }
