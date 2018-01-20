@@ -9,24 +9,44 @@ export const moveRobot = createAction(GAME_MOVE_ROBOT, (x: number, y: number): O
 
 export type GameAction = ActionType<typeof moveRobot>
 
-const defaultGameState = {
-  robotPosition: {x: 1, y: 7},
-}
-
 export type Position = {
   x: number,
   y: number
 }
 
-type GameState = {
-  robotPosition: Position,
+type Robot = {
+  color: string,
+  id: string,
+  inPlay: boolean,
+  kinged: boolean,
+  position: Position,
 }
+
+
+type GameState = {
+  robots: {
+    p1r1: Robot
+  }
+}
+
+const defaultGameState = {
+  robots: {
+    p1r1: {
+      color: 'red',
+      id: 'p1r1',
+      inPlay: true,
+      kinged: false,
+      position: {x: 1, y: 7},
+    }
+  }
+}
+
 
 const moveRobotHandler = (state: GameState, action: ActionType<typeof moveRobot>): GameState => {
   const {x, y} = action.payload
   const newState = immutable(state)
-    .set(['robotPosition', 'x'], x)
-    .set(['robotPosition', 'y'], y)
+    .set(['robots', 'p1r1', 'position', 'x'], x)
+    .set(['robots', 'p1r1', 'position', 'y'], y)
     .value()
   return newState
 }

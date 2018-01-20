@@ -103,7 +103,7 @@ class BoardSquareRender extends Component<Props> {
 }
 
 const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => {
-  const robotPosition = state.game.robotPosition
+  const robotPosition = state.game.robots.p1r1.position
   return {
     robotPosition,
   }
