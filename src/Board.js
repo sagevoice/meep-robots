@@ -1,13 +1,29 @@
 // @flow
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import BoardSquare from './BoardSquare'
 import Knight from './Knight'
+import type {State} from './store'
 
 type OwnProps = {
+}
+
+type StateProps = {
   knightPosition: Array<number>
 }
 
-class Board extends Component <OwnProps> {
+type Props = OwnProps & StateProps
+
+class BoardRender extends Component<Props> {
+
+  renderPiece(x: number, y: number): ?React$Element<*>  {
+    const {knightPosition} = this.props
+    const [knightX, knightY] = knightPosition
+    const isKnightHere = x === knightX && y === knightY
+    return isKnightHere
+      ? <Knight/>
+      : null
+  }
 
   renderSquare(i: number): React$Element<*> {
     const x = i % 8
@@ -25,14 +41,6 @@ class Board extends Component <OwnProps> {
     )
   }
 
-  renderPiece(x: number, y: number): ?React$Element<*>  {
-    const [knightX, knightY] = this.props.knightPosition
-    const isKnightHere = x === knightX && y === knightY
-    return isKnightHere
-      ? <Knight/>
-      : null
-  }
-
   render() {
     const squares = Array(64).fill(1)
 
@@ -46,4 +54,12 @@ class Board extends Component <OwnProps> {
   }
 }
 
+const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => {
+  const knightPosition = state.game.knightPosition
+  return {
+    knightPosition,
+  }
+}
+
+const Board = connect(mapStateToProps, null)(BoardRender)
 export default Board

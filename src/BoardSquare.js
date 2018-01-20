@@ -6,15 +6,12 @@ import type {
   DropTargetConnector,
   DropTargetMonitor,
 } from 'react-dnd'
-import Square from './Square'
+import {connect} from 'react-redux'
 import {canMoveKnight, moveKnight} from './Game'
+import type {GameAction} from './Game'
 import ItemTypes from './ItemTypes'
-
-type CollectProps = {
-  connectDropTarget: ConnectDropTarget,
-  isOver: boolean,
-  canDrop: boolean,
-}
+import Square from './Square'
+import type {State} from './store'
 
 type OwnProps = {
   children: React$Node,
@@ -22,27 +19,44 @@ type OwnProps = {
   y: number,
 }
 
-type Props = CollectProps & OwnProps
+type CollectProps = {
+  canDrop: boolean,
+  connectDropTarget: ConnectDropTarget,
+  isOver: boolean,
+  item: Object,
+}
+
+type StateProps = {
+  knightPosition: Array<number>
+}
+
+type DispatchProps = {
+  dropKnight: (x: number, y: number) => void,
+}
+
+type Props = OwnProps & CollectProps & StateProps & DispatchProps
 
 const squareTarget = {
-  canDrop(props) {
-    return canMoveKnight(props.x, props.y)
+  canDrop(props: Props): boolean {
+    const {knightPosition} = props
+    return canMoveKnight(knightPosition, props.x, props.y)
   },
 
-  drop(props) {
-    moveKnight(props.x, props.y)
+  drop(props: Props): void {
+    props.dropKnight(props.x, props.y)
   }
 }
 
 const collect = (connect: DropTargetConnector, monitor: DropTargetMonitor): CollectProps => {
   return {
+    canDrop: monitor.canDrop(),
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
-    canDrop: monitor.canDrop()
+    item: monitor.getItem(),
   }
 }
 
-class BoardSquare extends Component<Props> {
+class BoardSquareRender extends Component<Props> {
 
   renderOverlay(color) {
     return (
@@ -87,6 +101,22 @@ class BoardSquare extends Component<Props> {
   }
 }
 
-export default DropTarget(ItemTypes.KNIGHT, squareTarget, collect)(
-  BoardSquare
+const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => {
+  const knightPosition = state.game.knightPosition
+  return {
+    knightPosition,
+  }
+}
+
+const mapDispatchToProps = (dispatch: Dispatch<GameAction>, ownProps: OwnProps): DispatchProps => (
+  {
+    dropKnight: (x: number, y:number): void => {
+      dispatch(moveKnight(x, y))
+    },
+  }
 )
+
+const BoardSquareDropTarget = DropTarget(ItemTypes.KNIGHT, squareTarget, collect)(BoardSquareRender)
+const BoardSquare = connect(mapStateToProps, mapDispatchToProps)(BoardSquareDropTarget)
+
+export default BoardSquare

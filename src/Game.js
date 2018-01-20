@@ -1,27 +1,36 @@
 // @flow
-let knightPosition = [1, 7]
-let observer = null
+import immutable from 'object-path-immutable'
+import {createAction, handleActions} from 'redux-actions'
+import type {ActionType} from 'redux-actions'
 
-function emitChange() {
-  if (observer) {
-    observer(knightPosition)
-  }
+const GAME_MOVE_KNIGHT = 'GAME_MOVE_KNIGHT'
+
+export const moveKnight = createAction(GAME_MOVE_KNIGHT, (x: number, y: number): Object => ({x, y}))
+
+export type GameAction = ActionType<typeof moveKnight>
+
+const defaultGameState = {
+  knightPosition: [1, 7],
 }
 
-export function observe(o: (knightPosition: Array<number>)=> void) {
-  if (observer) {
-    throw new Error('Multiple observers not implemented.')
-  }
-
-  observer = o
-  emitChange()
-
-  return () => {
-    observer = null
-  }
+type GameState = {
+  knightPosition: Array<number>,
 }
 
-export function canMoveKnight(toX: number, toY: number) {
+const moveKnightHandler = (state: GameState, action: ActionType<typeof moveKnight>): GameState => {
+  const {x, y} = action.payload
+  const newState = immutable(state)
+    .set(['knightPosition', '0'], x)
+    .set(['knightPosition', '1'], y)
+    .value()
+  return newState
+}
+
+const game = handleActions({
+  [GAME_MOVE_KNIGHT]: moveKnightHandler,
+}, defaultGameState)
+
+export function canMoveKnight(knightPosition: Array<number>, toX: number, toY: number): boolean {
   const [x, y] = knightPosition
   const dx = toX - x
   const dy = toY - y
@@ -32,7 +41,4 @@ export function canMoveKnight(toX: number, toY: number) {
   )
 }
 
-export function moveKnight(toX: number, toY: number) {
-  knightPosition = [toX, toY]
-  emitChange()
-}
+export default game

@@ -20,12 +20,13 @@ type CollectedProps = {
 type Props = OwnProps & CollectedProps
 
 const knightSource: DragSourceSpec<OwnProps> = {
-  beginDrag: (props: OwnProps, monitor: DragSourceMonitor,
-                component: React$Component<OwnProps>): Object => ({
-  })
+  beginDrag: (props: OwnProps, monitor: DragSourceMonitor, component: React$Component<OwnProps>): Object => (
+    {
+    }
+  ),
 }
 
-const collect = (connect: DragSourceConnector, monitor: DragSourceMonitor): Props => ({
+const collect = (connect: DragSourceConnector, monitor: DragSourceMonitor): CollectedProps => ({
   // Functions we need or wish to pass to the source component (as props)
   connectDragSource: connect.dragSource(),
   connectDragPreview: connect.dragPreview(),
