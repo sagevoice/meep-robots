@@ -27,7 +27,7 @@ type CollectProps = {
 }
 
 type StateProps = {
-  knightPosition: Array<number>
+  robotPosition: Array<number>
 }
 
 type DispatchProps = {
@@ -38,8 +38,8 @@ type Props = OwnProps & CollectProps & StateProps & DispatchProps
 
 const squareTarget = {
   canDrop(props: Props): boolean {
-    const {knightPosition} = props
-    return canMoveKnight(knightPosition, props.x, props.y)
+    const {robotPosition} = props
+    return canMoveKnight(robotPosition, props.x, props.y)
   },
 
   drop(props: Props): void {
@@ -102,9 +102,9 @@ class BoardSquareRender extends Component<Props> {
 }
 
 const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => {
-  const knightPosition = state.game.knightPosition
+  const robotPosition = state.game.robotPosition
   return {
-    knightPosition,
+    robotPosition,
   }
 }
 
@@ -116,7 +116,7 @@ const mapDispatchToProps = (dispatch: Dispatch<GameAction>, ownProps: OwnProps):
   }
 )
 
-const BoardSquareDropTarget = DropTarget(ItemTypes.KNIGHT, squareTarget, collect)(BoardSquareRender)
+const BoardSquareDropTarget = DropTarget(ItemTypes.ROBOT, squareTarget, collect)(BoardSquareRender)
 const BoardSquare = connect(mapStateToProps, mapDispatchToProps)(BoardSquareDropTarget)
 
 export default BoardSquare

@@ -1,4 +1,4 @@
 // @flow
 export default {
-  KNIGHT: 'knight',
+  ROBOT: 'ROBOT',
 }

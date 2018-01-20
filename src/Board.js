@@ -2,14 +2,14 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import BoardSquare from './BoardSquare'
-import Knight from './Knight'
+import Robot from './Robot'
 import type {State} from './store'
 
 type OwnProps = {
 }
 
 type StateProps = {
-  knightPosition: Array<number>
+  robotPosition: Array<number>
 }
 
 type Props = OwnProps & StateProps
@@ -17,11 +17,11 @@ type Props = OwnProps & StateProps
 class BoardRender extends Component<Props> {
 
   renderPiece(x: number, y: number): ?React$Element<*>  {
-    const {knightPosition} = this.props
-    const [knightX, knightY] = knightPosition
-    const isKnightHere = x === knightX && y === knightY
+    const {robotPosition} = this.props
+    const [robotX, robotY] = robotPosition
+    const isKnightHere = x === robotX && y === robotY
     return isKnightHere
-      ? <Knight/>
+      ? <Robot/>
       : null
   }
 
@@ -57,9 +57,9 @@ class BoardRender extends Component<Props> {
 }
 
 const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => {
-  const knightPosition = state.game.knightPosition
+  const robotPosition = state.game.robotPosition
   return {
-    knightPosition,
+    robotPosition,
   }
 }
 

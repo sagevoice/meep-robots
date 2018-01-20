@@ -19,7 +19,7 @@ type CollectedProps = {
 }
 type Props = OwnProps & CollectedProps
 
-const knightSource: DragSourceSpec<OwnProps> = {
+const robotSource: DragSourceSpec<OwnProps> = {
   beginDrag: (props: OwnProps, monitor: DragSourceMonitor, component: React$Component<OwnProps>): Object => (
     {
     }
@@ -34,7 +34,7 @@ const collect = (connect: DragSourceConnector, monitor: DragSourceMonitor): Coll
 })
 
 
-class Knight extends Component<Props> {
+class Robot extends Component<Props> {
 
   componentDidMount() {
     const img = new Image()
@@ -345,4 +345,4 @@ class Knight extends Component<Props> {
   }
 }
 
-export default DragSource(ItemTypes.KNIGHT, knightSource, collect)(Knight)
+export default DragSource(ItemTypes.ROBOT, robotSource, collect)(Robot)
