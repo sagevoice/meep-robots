@@ -1,7 +1,5 @@
 // @flow
 import React, {Component} from 'react'
-import {DragDropContext} from 'react-dnd'
-import HTML5Backend from 'react-dnd-html5-backend'
 import Board from './Board'
 
 type Props = {}
@@ -84,4 +82,4 @@ class App extends Component<Props> {
   }
 }
 
-export default DragDropContext(HTML5Backend)(App)
+export default App
