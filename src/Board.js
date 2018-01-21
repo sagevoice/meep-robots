@@ -1,4 +1,5 @@
 // @flow
+import _ from 'lodash'
 import React, {Component} from 'react'
 import {DragDropContext, DropTarget} from 'react-dnd'
 import type {
@@ -12,7 +13,7 @@ import BoardSquare from './BoardSquare'
 import ItemTypes from './ItemTypes'
 import Robot from './Robot'
 import {moveRobot} from './game'
-import type {GameAction, Robots} from './game'
+import type {GameAction, Position, Robots} from './game'
 import type {State} from './store'
 
 type OwnProps = {}
@@ -36,19 +37,18 @@ type Props = OwnProps & CollectProps & StateProps & DispatchProps
 
 class BoardRender extends Component<Props> {
 
-  renderOverlay(color: string): React$Element<*> {
+  renderFeedback(): React$Element<*> {
+    // const {item} = this.props
+    const style = {
+      height: '100%',
+      left: 0,
+      position: 'absolute',
+      top: 0,
+      width: '100%',
+    }
     return(
       <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          height: '100%',
-          width: '100%',
-          zIndex: 1,
-          opacity: 0.5,
-          backgroundColor: color
-        }}
+        style={style}
       />
     )
   }
@@ -73,7 +73,7 @@ class BoardRender extends Component<Props> {
   }
 
   render() {
-    const {connectDropTarget, robots} = this.props
+    const {connectDropTarget, isOver, robots} = this.props
     const squares = Array(64).fill('')
     Object.keys(robots).forEach((robotId: string): void => {
         const robot = robots[robotId]
@@ -90,26 +90,119 @@ class BoardRender extends Component<Props> {
             flexWrap: 'wrap',
             height: '512px',
             margin: '0 auto',
-            width: '512px'
+            position: 'relative',
+            width: '512px',
           }}
         >
           {squares.map(
               (robotId: string, index: number) =>
                 (this.renderSquare(robotId, index))
           )}
+          {isOver && this.renderFeedback()}
       </div>
     )
   }
 }
 
+const calcDiagonals = (position: Position, distance: number): Array<Position> => {
+  const diagonals = []
+  const signs = [-1, 1]
+  const delta = signs.map((sign: number) => (sign * distance))
+  // diagonals
+  delta.forEach((x: number): void => {
+    const newX = position.x + x
+    if (newX > -1 && newX < 8) {
+      delta.forEach((y: number): void => {
+        const newY = position.y + y
+        if (newY > -1 && newY < 8) {
+          diagonals.push({x: newX, y: newY})
+        }
+      })
+    }
+  })
+  return diagonals
+}
+
+const calcMeeps = (position: Position, multiplier: number): Array<Position> => {
+  const meeps = []
+  const signs = [-2, 2]
+  const delta = signs.map((sign: number) => (sign * multiplier))
+  // horizonatal meep
+  delta.forEach((x: number): void => {
+    const newX = position.x + x
+    if (newX > -1 && newX < 8) {
+      meeps.push({x: newX, y: position.y})
+    }
+  })
+  // vertical meep
+  delta.forEach((y: number): void => {
+    const newY = position.y + y
+    if (newY > -1 && newY < 8) {
+      meeps.push({x: position.x, y: newY})
+    }
+  })
+  return meeps
+}
+
+
+const calcPossibleMoves = (position: Position, crowned: boolean): Array<Position> => {
+  let possible = []
+  if (crowned) {
+    for(let i = 1; i < 8; i++) {
+      const diagonals = calcDiagonals(position, i)
+      possible = possible.concat(diagonals)
+    }
+    for(let i = 1; i < 4; i++) {
+      const meeps = calcDiagonals(position, i)
+      possible = possible.concat(meeps)
+    }
+
+  } else {
+    const diagonals = calcDiagonals(position, 1)
+    const meeps = calcMeeps(position, 1)
+    possible = possible.concat(diagonals, meeps)
+  }
+  return possible
+}
+
+const getValidMoves = (robotId: string, robots: Robots): Array<Position> => {
+  const robotData = robots[robotId]
+  const {crowned, player, position} = robotData
+  const robotIds = Object.keys(robots)
+  const conflictIds = robotIds.filter((id: string): boolean => {
+    const data = robots[id]
+    return (id !== robotId && data.player === player)
+  })
+  const conflicts = conflictIds.map((id: string): Position => {
+    const data = robots[id]
+    return data.position
+  })
+  const possiblePos = calcPossibleMoves(position, crowned)
+  const positionComparator = (item: Position, item2: Position): boolean => {
+    return (item.x === item2.x && item.y === item2.y)
+  }
+  const validMoves = _.differenceWith(possiblePos, conflicts, positionComparator)
+  return validMoves
+}
+
 const boardTarget = {
-  canDrop(props: Props): boolean {
-    return true
+  canDrop: (props: Props, monitor: DropTargetMonitor): boolean => {
+    const item = monitor.getItem()
+    if (item) {
+      const {robots} = props
+      const validMoves = getValidMoves(item.id, robots)
+      return validMoves.length > 0
+    }
+    return false
   },
 
-  drop(props: Props): void {
-    // props.dropRobot(props.x, props.y)
-  }
+  drop: (props: Props, monitor: DropTargetMonitor): ?Object => {
+
+  },
+
+  hover: (props: Props, monitor: DropTargetMonitor): void => {
+
+  },
 }
 
 const collect = (connect: DropTargetConnector, monitor: DropTargetMonitor): CollectProps => (

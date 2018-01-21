@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "lodash": "^4.17.4",
     "object-path-immutable": "^0.5.2",
     "react": "^16.2.0",
     "react-dnd": "^2.5.4",
