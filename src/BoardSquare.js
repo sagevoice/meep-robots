@@ -1,6 +1,5 @@
 // @flow
 import React, {Component} from 'react'
-import Square from './Square'
 
 type OwnProps = {
   children: React$Node,
@@ -16,16 +15,19 @@ class BoardSquare extends Component<OwnProps> {
       y,
       children
     } = this.props
-    const black = (x + y) % 2 === 1
+    const player1 = (x + y) % 2 === 0
+    const backgroundColor = player1
+      ? 'LightGreen'
+      : 'DeepSkyBlue'
 
     return (
       <div
         style={{
-          position: 'relative',
-          width: '100%',
-          height: '100%'
+          backgroundColor,
+          height: '12.5%',
+          width: '12.5%',
         }}>
-        <Square black={black}>{children}</Square>
+        {children}
       </div>
     )
   }
