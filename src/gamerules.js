@@ -63,6 +63,10 @@ const calcPossibleMoves = (position: Position, crowned: boolean): Array<Position
   return possible
 }
 
+const equalPositions = (item: Position, item2: Position): boolean => {
+  return (item.x === item2.x && item.y === item2.y)
+}
+
 const getValidMoves = (robotId: string, robots: Robots): Array<Position> => {
   const robotData = robots[robotId]
   const {crowned, player, position} = robotData
@@ -76,15 +80,52 @@ const getValidMoves = (robotId: string, robots: Robots): Array<Position> => {
     return data.position
   })
   const possiblePos = calcPossibleMoves(position, crowned)
-  const positionComparator = (item: Position, item2: Position): boolean => {
-    return (item.x === item2.x && item.y === item2.y)
-  }
-  const validMoves = _.differenceWith(possiblePos, conflicts, positionComparator)
+  const validMoves = _.differenceWith(possiblePos, conflicts, equalPositions)
   return validMoves
+}
+
+const isTargetOccupied = (robots: Robots, target: Position): boolean => {
+  const robotIds = Object.keys(robots)
+  return robotIds.some((robotId: string): boolean => (
+    equalPositions(target, robots[robotId].position)
+  ))
+}
+
+const isMoveLegal = (crowned: boolean, position: Position, target: Position): boolean => {
+  if (target.x > -1 && target.x < 8 && target.y > -1 && target.y < 8) {
+    const dx = Math.abs(target.x - position.x)
+    const dy = Math.abs(target.y - position.y)
+    if (crowned) {
+      return (
+        (dx > 0 && dx === dy) ||
+        (dx === 0 && (dy % 2) === 0) ||
+        ((dx % 2) === 0 && dy === 0)
+      )
+    } else {
+      return (
+        (dx === 1 && dy === 1) ||
+        (dx === 0 && dy === 2) ||
+        (dx === 2 && dy === 0)
+      )
+    }
+  }
+  return false
+}
+
+const isValidMove = (robotId: string, robots: Robots, target: Position): boolean => {
+  const robotData = robots[robotId]
+  const {crowned, position} = robotData
+  // first check if this is even a possible move
+  if (isMoveLegal(crowned, position, target)) {
+    // then check if the target is already occupied
+    return !isTargetOccupied(robotData, target)
+  }
+  return false
 }
 
 const gamerules = {
   getValidMoves,
+  isValidMove,
 }
 
 export default gamerules

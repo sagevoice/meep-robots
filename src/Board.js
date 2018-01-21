@@ -2,6 +2,7 @@
 import React, {Component} from 'react'
 import {DragDropContext, DropTarget} from 'react-dnd'
 import type {
+  ClientOffset,
   ConnectDropTarget,
   DropTargetConnector,
   DropTargetMonitor
@@ -12,7 +13,7 @@ import BoardSquare from './BoardSquare'
 import ItemTypes from './ItemTypes'
 import Robot from './Robot'
 import {moveRobot} from './game'
-import type {GameAction, Robots} from './game'
+import type {GameAction, Position, Robots} from './game'
 import gamerules from './gamerules'
 import type {State} from './store'
 
@@ -22,7 +23,8 @@ type CollectProps = {
   canDrop: boolean,
   connectDropTarget: ConnectDropTarget,
   isOver: boolean,
-  item: Object
+  item: Object,
+  sourceClientOffset: ClientOffset,
 }
 
 type StateProps = {
@@ -38,7 +40,7 @@ type Props = OwnProps & CollectProps & StateProps & DispatchProps
 class BoardRender extends Component<Props> {
 
   renderFeedback(): React$Element<*> {
-    // const {item} = this.props
+    const {item, robots, sourceClientOffset} = this.props
     const style = {
       height: '100%',
       left: 0,
@@ -46,10 +48,44 @@ class BoardRender extends Component<Props> {
       top: 0,
       width: '100%',
     }
+    const validMoves = gamerules.getValidMoves(item.id, robots)
+    const curPos = {
+      x: Math.floor(sourceClientOffset.x / 64),
+      y: Math.floor(sourceClientOffset.y / 64),
+    }
+    const isValidPos = gamerules.isValidMove(item.id, robots, curPos)
+    const hightlightColor = isValidPos ? 'GreenYellow' : 'red'
     return(
       <div
         style={style}
-      />
+      >
+        {validMoves.map((pos: Position): React$Element<*> => (
+            <div
+              style={{
+                border: '8px solid yellow',
+                boxSizing: 'border-box',
+                height: '64px',
+                left: 64 * pos.x,
+                opacity: '50%',
+                position: 'absolute',
+                top: 64 * pos.y,
+                width: '64px',
+              }}
+            />
+          ))
+        }
+        <div
+          style={{
+            backgroundColor: hightlightColor,
+            height: '64px',
+            left: 64 * curPos.x,
+            opacity: '50%',
+            position: 'absolute',
+            top: 64 * curPos.y,
+            width: '64px',
+          }}
+        />
+      </div>
     )
   }
 
@@ -129,7 +165,8 @@ const collect = (connect: DropTargetConnector, monitor: DropTargetMonitor): Coll
     canDrop: monitor.canDrop(),
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
-    item: monitor.getItem()
+    item: monitor.getItem(),
+    sourceClientOffset: monitor.getSourceClientOffset(),
   }
 )
 
