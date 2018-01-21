@@ -42,7 +42,13 @@ class App extends Component<Props> {
             style={{
               flexShrink: 0,
             }}>
-            <h1 style={{padding: '0.5em'}}>PLAYER 1</h1>
+            <h1
+              style={{
+                backgroundColor: 'LightGreen',
+                color: 'DarkGreen',
+                padding: '0.5em',
+              }}
+            >PLAYER 1</h1>
           </div>
           <div
             style={{
@@ -55,7 +61,13 @@ class App extends Component<Props> {
             style={{
               flexShrink: 0,
             }}>
-            <h1 style={{padding: '0.5em'}}>PLAYER 2</h1>
+            <h1
+              style={{
+                backgroundColor: 'DeepSkyBlue',
+                color: 'MediumBlue',
+                padding: '0.5em',
+              }}
+            >PLAYER 2</h1>
           </div>
         </main>
         <footer

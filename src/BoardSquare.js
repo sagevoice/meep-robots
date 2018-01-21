@@ -10,7 +10,7 @@ import {connect} from 'react-redux'
 import {canMoveRobot, moveRobot} from './game'
 import type {GameAction} from './game'
 import ItemTypes from './ItemTypes'
-import type {Position} from './game'
+import type {Robots} from './game'
 import Square from './Square'
 import type {State} from './store'
 
@@ -28,7 +28,7 @@ type CollectProps = {
 }
 
 type StateProps = {
-  robotPosition: Position
+  robots: Robots
 }
 
 type DispatchProps = {
@@ -39,8 +39,12 @@ type Props = OwnProps & CollectProps & StateProps & DispatchProps
 
 const squareTarget = {
   canDrop(props: Props): boolean {
-    const {robotPosition} = props
-    return canMoveRobot(robotPosition, props.x, props.y)
+    const {robots, item} = props
+    if (item) {
+      const robotPosition = robots[item.id]
+      return canMoveRobot(robotPosition, props.x, props.y)
+    }
+    return false
   },
 
   drop(props: Props): void {
@@ -103,9 +107,9 @@ class BoardSquareRender extends Component<Props> {
 }
 
 const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => {
-  const robotPosition = state.game.robots.p1r1.position
+  const robots = state.game.robots
   return {
-    robotPosition,
+    robots,
   }
 }
 

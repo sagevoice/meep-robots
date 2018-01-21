@@ -3,30 +3,30 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import BoardSquare from './BoardSquare'
 import Robot from './Robot'
-import type {Position} from './game'
+import type {Robots} from './game'
 import type {State} from './store'
 
 type OwnProps = {
 }
 
 type StateProps = {
-  robotPosition: Position
+  robots: Robots
 }
 
 type Props = OwnProps & StateProps
 
 class BoardRender extends Component<Props> {
 
-  renderPiece(x: number, y: number): ?React$Element<*>  {
-    const {robotPosition} = this.props
-    const {x:robotX, y:robotY} = robotPosition
-    const isRobotHere = x === robotX && y === robotY
-    return isRobotHere
-      ? <Robot/>
-      : null
+  renderPiece(robotId: string, x: number, y: number): ?React$Element<*>  {
+    if (robotId) {
+      const {robots} = this.props
+      const robot = robots[robotId]
+      return (<Robot data={robot}/>)
+    }
+    return null
   }
 
-  renderSquare(i: number): React$Element<*> {
+  renderSquare(robotId: string, i: number): React$Element<*> {
     const x = i % 8
     const y = Math.floor(i / 8)
 
@@ -37,13 +37,20 @@ class BoardRender extends Component<Props> {
           width: '12.5%',
           height: '12.5%'
         }}>
-        <BoardSquare x={x} y={y} children={this.renderPiece(x, y)}/>
+        <BoardSquare x={x} y={y} children={this.renderPiece(robotId, x, y)}/>
       </div>
     )
   }
 
   render() {
-    const squares = Array(64).fill(1)
+    const {robots} = this.props
+    const squares = Array(64).fill('')
+    Object.keys(robots).forEach((robotId: string): void => {
+      const robot = robots[robotId]
+      const {position} = robot
+      const index = position.x + 8 * position.y
+      squares[index] = robotId
+    })
 
     return <div
       style={{
@@ -53,14 +60,14 @@ class BoardRender extends Component<Props> {
         height: '512px',
         margin: '0 auto',
         width: '512px',
-      }}>{squares.map((item: number, index: number) => (this.renderSquare(index)))}</div>
+      }}>{squares.map((robotId: string, index: number) => (this.renderSquare(robotId, index)))}</div>
   }
 }
 
 const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => {
-  const robotPosition = state.game.robots.p1r1.position
+  const robots = state.game.robots
   return {
-    robotPosition,
+    robots,
   }
 }
 

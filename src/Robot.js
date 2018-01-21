@@ -8,9 +8,11 @@ import type {
   DragSourceMonitor,
   DragSourceSpec,
 } from 'react-dnd'
+import type {RobotData} from './game'
 import ItemTypes from './ItemTypes'
 
 type OwnProps = {
+  data: RobotData
 }
 type CollectedProps = {
   connectDragSource: ConnectDragSource,
@@ -22,6 +24,7 @@ type Props = OwnProps & CollectedProps
 const robotSource: DragSourceSpec<OwnProps> = {
   beginDrag: (props: OwnProps, monitor: DragSourceMonitor, component: React$Component<OwnProps>): Object => (
     {
+      id: props.data.id
     }
   ),
 }
@@ -328,26 +331,45 @@ class Robot extends Component<Props> {
   }
 
   render() {
-    const {connectDragSource, isDragging} = this.props
+    const {connectDragSource, isDragging, data} = this.props
     return connectDragSource(
       <div
         style={{
-          fontSize: 40,
-          fontWeight: 'bold',
-          cursor: 'move',
           opacity: isDragging
             ? 0.5
             : 1
         }}>
         <svg
-          height="36px"
+          height="9px"
           version="1.1"
-          viewBox="0 0 160 288"
-          width="20px"
+          viewBox="0 0 160 48"
+          width="30px"
           xmlns="http://www.w3.org/2000/svg"
+          style={{
+            display: 'block',
+            margin: '0 auto',
+          }}
         >
           <path
-            d="m 32,0 h 96 v 80 h -32 v 16 h 64 v 96 h -16 v -64 h -16 v 180 h -32 v -112 h -32 v 112 h -32 v -180 h -16 v 64 h -16 v -96 h 64 v -16 h -32 v -80 z m 16, 16 v 16 h 16 v -16 h -16 z m 48, 0  v 16 h 16 v -16 h -16 z m -32, 32 v 16 h 32 v -16 h -32 z"/>
+            d="m 32,16 h 16 v 16 h 16 v -32 h 32 v 32 h 16 v -16 h 16 v 32 h -96 v -48 z"
+            style={{fill: data.kinged ? 'GoldenRod': 'none'}}
+          />
+        </svg>
+        <svg
+          height="54px"
+          version="1.1"
+          viewBox="0 0 160 288"
+          width="30px"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{
+            display: 'block',
+            margin: '0 auto',
+          }}
+        >
+          <path
+            d="m 32,0 h 96 v 80 h -32 v 16 h 64 v 96 h -16 v -64 h -16 v 180 h -32 v -112 h -32 v 112 h -32 v -180 h -16 v 64 h -16 v -96 h 64 v -16 h -32 v -80 z m 16, 16 v 16 h 16 v -16 h -16 z m 48, 0  v 16 h 16 v -16 h -16 z m -32, 32 v 16 h 32 v -16 h -32 z"
+            style={{fill: data.color}}
+          />
         </svg>
       </div>,
     )
