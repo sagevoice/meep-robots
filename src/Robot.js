@@ -332,6 +332,7 @@ class Robot extends Component<Props> {
 
   render() {
     const {connectDragSource, isDragging, data} = this.props
+    const fillColor = data.player === 'p1' ? 'DarkGreen' : 'MediumBlue'
     return connectDragSource(
       <div
         style={{
@@ -352,7 +353,7 @@ class Robot extends Component<Props> {
         >
           <path
             d="m 32,16 h 16 v 16 h 16 v -32 h 32 v 32 h 16 v -16 h 16 v 32 h -96 v -48 z"
-            style={{fill: data.kinged ? 'GoldenRod': 'none'}}
+            style={{fill: data.crowned ? 'GoldenRod': 'none'}}
           />
         </svg>
         <svg
@@ -368,7 +369,7 @@ class Robot extends Component<Props> {
         >
           <path
             d="m 32,0 h 96 v 80 h -32 v 16 h 64 v 96 h -16 v -64 h -16 v 180 h -32 v -112 h -32 v 112 h -32 v -180 h -16 v 64 h -16 v -96 h 64 v -16 h -32 v -80 z m 16, 16 v 16 h 16 v -16 h -16 z m 48, 0  v 16 h 16 v -16 h -16 z m -32, 32 v 16 h 32 v -16 h -32 z"
-            style={{fill: data.color}}
+            style={{fill: fillColor}}
           />
         </svg>
       </div>,
