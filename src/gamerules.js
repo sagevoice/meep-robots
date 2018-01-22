@@ -118,7 +118,7 @@ const isValidMove = (robotId: string, robots: Robots, target: Position): boolean
   // first check if this is even a possible move
   if (isMoveLegal(crowned, position, target)) {
     // then check if the target is already occupied
-    return !isTargetOccupied(robotData, target)
+    return !isTargetOccupied(robots, target)
   }
   return false
 }

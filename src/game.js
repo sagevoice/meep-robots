@@ -5,7 +5,7 @@ import type {ActionType} from 'redux-actions'
 
 const GAME_MOVE_ROBOT = 'GAME_MOVE_ROBOT'
 
-export const moveRobot = createAction(GAME_MOVE_ROBOT, (x: number, y: number): Object => ({x, y}))
+export const moveRobot = createAction(GAME_MOVE_ROBOT, (robotId: string, x: number, y: number): Object => ({robotId, x, y}))
 
 export type GameAction = ActionType<typeof moveRobot>
 
@@ -163,10 +163,10 @@ const defaultGameState = {
 }
 
 const moveRobotHandler = (state: GameState, action: ActionType<typeof moveRobot>): GameState => {
-  const {x, y} = action.payload
+  const {robotId, x, y} = action.payload
   const newState = immutable(state)
-    .set(['robots', 'p1r1', 'position', 'x'], x)
-    .set(['robots', 'p1r1', 'position', 'y'], y)
+    .set(['robots', robotId, 'position', 'x'], x)
+    .set(['robots', robotId, 'position', 'y'], y)
     .value()
   return newState
 }
