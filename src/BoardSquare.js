@@ -2,7 +2,6 @@
 import React, {Component} from 'react'
 import {DropTarget} from 'react-dnd'
 import type {
-  ClientOffset,
   ConnectDropTarget,
   DropTargetConnector,
   DropTargetMonitor
@@ -24,8 +23,6 @@ type CollectProps = {
   canDrop: boolean,
   connectDropTarget: ConnectDropTarget,
   isOver: boolean,
-  item: Object,
-  sourceClientOffset: ClientOffset,
 }
 
 type StateProps = {
@@ -40,21 +37,66 @@ type Props = OwnProps & CollectProps & StateProps & DispatchProps
 
 class BoardSquareRender extends Component<Props> {
 
-  renderOverlay(color: string): React$Element<*> {
+  renderInvalidTarget(): React$Element<*> {
     return (
       <div
         style={{
+          height: '100%',
+          left: 0,
           position: 'absolute',
           top: 0,
-          left: 0,
-          height: '100%',
           width: '100%',
-          zIndex: 1,
-          opacity: 0.5,
-          backgroundColor: color
-        }}/>
+        }}
+      >
+        <svg
+          height="80%"
+          style={{
+            display: 'block',
+            margin: '10%',
+          }}
+          version="1.1"
+          viewBox="0 0 512 512"
+          width="90%"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle cx="256" cy="256" r="232" stroke="darkred" stroke-width="48" fill="none"/>
+          <line x1="88" y1="88" x2="424" y2="424" stroke="darkred" stroke-width="48"/>
+        </svg>
+      </div>
     )
   }
+
+  renderValidTarget(): React$Element<*> {
+    return (
+      <div
+        style={{
+          border: '8px solid yellow',
+          boxSizing: 'border-box',
+          height: '100%',
+          left: 0,
+          position: 'absolute',
+          top: 0,
+          width: '100%',
+        }}
+      />
+    )
+  }
+
+  renderCurTarget(): React$Element<*> {
+    return (
+      <div
+        style={{
+          backgroundColor: 'Lime',
+          height: '100%',
+          left: 0,
+          position: 'absolute',
+          top: 0,
+          width: '100%',
+        }}
+      />
+    )
+  }
+
 
   render() {
     const {
@@ -79,9 +121,9 @@ class BoardSquareRender extends Component<Props> {
           width: '12.5%',
         }}>
         {children}
-        {isOver && !canDrop && this.renderOverlay('red')}
-        {!isOver && canDrop && this.renderOverlay('yellow')}
-        {isOver && canDrop && this.renderOverlay('green')}
+        {isOver && !canDrop && this.renderInvalidTarget()}
+        {!isOver && canDrop && this.renderValidTarget()}
+        {isOver && canDrop && this.renderCurTarget()}
       </div>
     )
   }
@@ -113,8 +155,6 @@ const collect = (connect: DropTargetConnector, monitor: DropTargetMonitor): Coll
     canDrop: monitor.canDrop(),
     connectDropTarget: connect.dropTarget(),
     isOver: monitor.isOver(),
-    item: monitor.getItem(),
-    sourceClientOffset: monitor.getSourceClientOffset(),
   }
 )
 

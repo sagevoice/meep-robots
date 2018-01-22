@@ -41,11 +41,11 @@ class BoardRender extends Component<Props> {
     const {robots} = this.props
     const squares = Array(64).fill('')
     Object.keys(robots).forEach((robotId: string): void => {
-        const robot = robots[robotId]
-        const {position} = robot
-        const index = position.x + 8 * position.y
-        squares[index] = robotId
-      })
+      const robot = robots[robotId]
+      const {position} = robot
+      const index = position.x + 8 * position.y
+      squares[index] = robotId
+    })
 
     return (
         <div
