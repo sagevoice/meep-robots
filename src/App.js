@@ -1,12 +1,21 @@
 // @flow
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import Board from './Board'
+import type {State} from './store'
 
-type Props = {}
+type OwnProps = {}
 
-class App extends Component<Props> {
+type StateProps = {
+  whoseTurn: string
+}
+
+type Props = OwnProps & StateProps
+
+class AppRender extends Component<Props> {
 
   render() {
+    const {whoseTurn} = this.props
     return (
       <div
         style={{
@@ -39,7 +48,8 @@ class App extends Component<Props> {
           <div
             style={{
               flexShrink: 0,
-            }}>
+            }}
+          >
             <h1
               style={{
                 backgroundColor: 'LightGreen',
@@ -47,6 +57,13 @@ class App extends Component<Props> {
                 padding: '0.5em',
               }}
             >PLAYER 1</h1>
+            {whoseTurn === 'p1' &&
+              <h2
+                style={{
+                  padding: '0.5em',
+                }}
+              >Your turn.</h2>
+            }
           </div>
           <div
             style={{
@@ -66,6 +83,13 @@ class App extends Component<Props> {
                 padding: '0.5em',
               }}
             >PLAYER 2</h1>
+            {whoseTurn === 'p2' &&
+              <h2
+                style={{
+                  padding: '0.5em',
+                }}
+              >Your turn.</h2>
+            }
           </div>
         </main>
         <footer
@@ -82,4 +106,12 @@ class App extends Component<Props> {
   }
 }
 
+const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => {
+  const whoseTurn = state.game.whoseTurn
+  return {
+    whoseTurn,
+  }
+}
+
+const App = connect(mapStateToProps, null)(AppRender)
 export default App

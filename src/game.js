@@ -42,10 +42,12 @@ export type Robots = {
 }
 
 type GameState = {
+  whoseTurn: string,
   robots: Robots
 }
 
 const defaultGameState = {
+  whoseTurn: 'p1',
   robots: {
     p1r1: {
       crowned: true,
@@ -164,7 +166,10 @@ const defaultGameState = {
 
 const moveRobotHandler = (state: GameState, action: ActionType<typeof moveRobot>): GameState => {
   const {robotId, x, y} = action.payload
+  const whoseTurn = state.whoseTurn
+  const nextTurn = whoseTurn === 'p1' ? 'p2' : 'p1'
   const newState = immutable(state)
+    .set(['whoseTurn'], nextTurn)
     .set(['robots', robotId, 'position', 'x'], x)
     .set(['robots', robotId, 'position', 'y'], y)
     .value()

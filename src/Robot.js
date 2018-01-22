@@ -9,24 +9,36 @@ import type {
   DragSourceSpec,
 } from 'react-dnd'
 import type {RobotData} from './game'
+import {connect} from 'react-redux'
 import ItemTypes from './ItemTypes'
+import type {State} from './store'
 
 type OwnProps = {
   data: RobotData
 }
+
 type CollectedProps = {
   connectDragSource: ConnectDragSource,
   connectDragPreview: ConnectDragPreview,
   isDragging: boolean,
 }
-type Props = OwnProps & CollectedProps
 
-const robotSource: DragSourceSpec<OwnProps> = {
-  beginDrag: (props: OwnProps, monitor: DragSourceMonitor, component: React$Component<OwnProps>): Object => (
+type StateProps = {
+  whoseTurn: string
+}
+
+type Props = OwnProps & CollectedProps & StateProps
+
+const robotSource: DragSourceSpec<Props> = {
+  beginDrag: (props: Props, monitor: DragSourceMonitor, component: React$Component<Props>): Object => (
     {
       id: props.data.id
     }
   ),
+  canDrag: (props: Props, monitor: DragSourceMonitor): boolean => {
+    const {data, whoseTurn} = props
+    return (data.player === whoseTurn)
+  },
 }
 
 const collect = (connect: DragSourceConnector, monitor: DragSourceMonitor): CollectedProps => ({
@@ -37,7 +49,7 @@ const collect = (connect: DragSourceConnector, monitor: DragSourceMonitor): Coll
 })
 
 
-class Robot extends Component<Props> {
+class RobotRender extends Component<Props> {
 
   componentDidMount() {
     const img = new Image()
@@ -377,4 +389,14 @@ class Robot extends Component<Props> {
   }
 }
 
-export default DragSource(ItemTypes.ROBOT, robotSource, collect)(Robot)
+const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => {
+  const whoseTurn = state.game.whoseTurn
+  return {
+    whoseTurn,
+  }
+}
+
+const DragSourceRobot = DragSource(ItemTypes.ROBOT, robotSource, collect)(RobotRender)
+const Robot = connect(mapStateToProps, null)(DragSourceRobot)
+
+export default Robot
