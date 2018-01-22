@@ -348,42 +348,48 @@ class RobotRender extends Component<Props> {
     return connectDragSource(
       <div
         style={{
-          opacity: isDragging
-            ? 0.5
-            : 1
+          height: '100%',
+          width: '100%',
+          opacity: isDragging ? 0.5 : 1,
+          position: 'relative',
         }}>
         <svg
-          height="9px"
+          height="90.625%"
           version="1.1"
-          viewBox="0 0 160 48"
-          width="30px"
+          viewBox="0 0 512 512"
+          width="90.625%"
           xmlns="http://www.w3.org/2000/svg"
           style={{
             display: 'block',
-            margin: '0 auto',
+            margin: '4.6875%',
           }}
         >
           <path
-            d="m 32,16 h 16 v 16 h 16 v -32 h 32 v 32 h 16 v -16 h 16 v 32 h -96 v -48 z"
-            style={{fill: data.crowned ? 'GoldenRod': 'none'}}
-          />
-        </svg>
-        <svg
-          height="54px"
-          version="1.1"
-          viewBox="0 0 160 288"
-          width="30px"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{
-            display: 'block',
-            margin: '0 auto',
-          }}
-        >
-          <path
-            d="m 32,0 h 96 v 80 h -32 v 16 h 64 v 96 h -16 v -64 h -16 v 180 h -32 v -112 h -32 v 112 h -32 v -180 h -16 v 64 h -16 v -96 h 64 v -16 h -32 v -80 z m 16, 16 v 16 h 16 v -16 h -16 z m 48, 0  v 16 h 16 v -16 h -16 z m -32, 32 v 16 h 32 v -16 h -32 z"
+            d="m 184,80 h 144 v 120 h -48 v 24 h 96 v 144 h -24 v -96 h -24 v 240 h -48 v -128 h -48 v 128 h -48 v -240 h -24 v 96 h -24 v -144 h 96 v -24 h -48 v -120 z m 24, 24 v 24 h 24 v -24 h -24 z m 72, 0  v 24 h 24 v -24 h -24 z m -48, 48 v 24 h 48 v -24 h -48 z"
             style={{fill: fillColor}}
           />
         </svg>
+        {data.crowned &&
+          <svg
+            height="90.625%"
+            version="1.1"
+            viewBox="0 0 512 512"
+            width="90.625%"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{
+              display: 'block',
+              left: '4.6875%',
+              margin: '0',
+              position: 'absolute',
+              top: 0,
+            }}
+          >
+            <path
+              d="m 184,40 h 24 v 24 h 24 v -48 h 48 v 48 h 24 v -24 h 24 v 48 h -144 v -64 z"
+              style={{fill: 'GoldenRod'}}
+            />
+          </svg>
+        }
       </div>,
     )
   }
