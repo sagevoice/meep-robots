@@ -1,21 +1,38 @@
 // @flow
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
+import {newGame, resignGame} from './game'
 import Board from './Board'
 import type {State} from './store'
 
 type OwnProps = {}
 
 type StateProps = {
-  whoseTurn: string
+  gameOver: boolean,
+  whoseTurn: string,
 }
 
-type Props = OwnProps & StateProps
+type DispatchProps = {
+  startNewGame: () => void,
+  resignGame: (player: string) => void,
+}
+
+type Props = OwnProps & StateProps & DispatchProps
 
 class AppRender extends Component<Props> {
 
+  newGameClick = (): void => {
+    const {startNewGame} = this.props
+    startNewGame()
+  }
+
+  resignClick = (player: string): void => {
+    const {resignGame} = this.props
+    resignGame(player)
+  }
+
   render() {
-    const {whoseTurn} = this.props
+    const {gameOver, whoseTurn} = this.props
     return (
       <div
         style={{
@@ -33,6 +50,16 @@ class AppRender extends Component<Props> {
             width: '100%',
           }}
         >
+          {gameOver &&
+            <button onClick={this.newGameClick} style={{
+                position: 'absolute',
+                display: 'block',
+                float: 'left',
+                fontSize: 'large',
+                fontWeight: 'bold',
+                margin: '1em',
+              }}>Start New Game</button>
+          }
           <h1>MEEP-ROBOTS</h1>
         </header>
         <main
@@ -57,12 +84,26 @@ class AppRender extends Component<Props> {
                 padding: '0.5em',
               }}
             >PLAYER 1</h1>
-            {whoseTurn === 'p1' &&
+            {whoseTurn === 'p1' && !gameOver &&
               <h2
                 style={{
                   padding: '0.5em',
                 }}
               >Your turn.</h2>
+            }
+            {gameOver &&
+              <h2
+                style={{
+                  padding: '0.5em',
+                }}
+              >GAME OVER</h2>
+            }
+            {!gameOver &&
+              <button onClick={() => this.resignClick('p1')} style={{
+                  fontSize: 'large',
+                  fontWeight: 'bold',
+                  margin: '1em',
+                }}>Resign</button>
             }
           </div>
           <div
@@ -83,12 +124,26 @@ class AppRender extends Component<Props> {
                 padding: '0.5em',
               }}
             >PLAYER 2</h1>
-            {whoseTurn === 'p2' &&
+            {whoseTurn === 'p2' && !gameOver &&
               <h2
                 style={{
                   padding: '0.5em',
                 }}
               >Your turn.</h2>
+            }
+            {gameOver &&
+              <h2
+                style={{
+                  padding: '0.5em',
+                }}
+              >GAME OVER</h2>
+            }
+            {!gameOver &&
+              <button onClick={() => this.resignClick('p2')} style={{
+                  fontSize: 'large',
+                  fontWeight: 'bold',
+                  margin: '1em',
+                }}>Resign</button>
             }
           </div>
         </main>
@@ -108,10 +163,24 @@ class AppRender extends Component<Props> {
 
 const mapStateToProps = (state: State, ownProps: OwnProps): StateProps => {
   const whoseTurn = state.game.whoseTurn
+  const gameOver = state.game.gameOver
   return {
+    gameOver,
     whoseTurn,
   }
 }
 
-const App = connect(mapStateToProps, null)(AppRender)
+const mapDispatchToProps = (dispatch: Dispatch<GameAction>, ownProps: OwnProps): DispatchProps => (
+  {
+    startNewGame: (): void => {
+      dispatch(newGame())
+    },
+    resignGame: (player: string): void => {
+      dispatch(resignGame(player))
+    },
+  }
+)
+
+
+const App = connect(mapStateToProps, mapDispatchToProps)(AppRender)
 export default App
